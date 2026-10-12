@@ -3,6 +3,14 @@
 // `pattern` is a regex source (no capture groups); `to` is the replacement.
 const RULES = [
   {
+    id: "qu",
+    title: "Q already says KW — drop the U",
+    note: "Q makes the “KW” sound on its own, so no U is needed after it.",
+    pattern: "qu",
+    to: "q",
+    examples: ["Quit", "Quick"],
+  },
+  {
     id: "ch",
     title: "Ch is now spelled C",
     note: "C takes over the “Ch” sound, so Chat is spelled Cat.",

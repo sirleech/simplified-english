@@ -103,7 +103,7 @@
   });
 
   const rulesEl = document.getElementById("rules");
-  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck"].map((id) => RULES.find((r) => r.id === id));
+  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu"].map((id) => RULES.find((r) => r.id === id));
   for (const r of SHOWN) {
     const card = document.createElement("section");
     card.className = "rule";
