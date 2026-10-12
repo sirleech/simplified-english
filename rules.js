@@ -1,23 +1,26 @@
 // Each rule matches at the current position in a single left-to-right pass.
 // Rules earlier in the list win over later ones, so order matters.
 // `pattern` is a regex source (no capture groups); `to` is the replacement.
-// Words (matched as prefixes, so plurals and -ing forms are covered) where EA
-// is not the long "ee" sound. Spelling alone can't tell, so this is a word list.
-const EA_NOT_EE = new RegExp(
-  "^(" +
-    [
-      "head", "bread", "dread", "tread", "spread", "thread", "dead", "deaf", "death",
-      "health", "wealth", "stealth", "breath", "sweat", "threat", "ready", "steady",
-      "heavy", "heaven", "weather", "feather", "leather", "heather", "measure",
-      "pleasure", "treasure", "meant", "meadow", "weapon", "instead", "already",
-      "great", "break", "steak", "bear", "pear", "wear", "swear", "tear", "heart",
-      "hearth", "earth", "early", "earn", "learn", "heard", "search", "pearl",
-      "yearn", "rehears", "ocean", "create", "creat", "idea", "area", "react",
-      "theat", "reali[sz]e", "cereal", "lineage", "beaut",
-    ].join("|") +
-    ")",
-  "i"
-);
+// Spelling alone can't tell which sound EA makes, so these are word lists.
+// Entries match as word prefixes, so plurals and -ing forms are covered.
+const prefixList = (words) => new RegExp("^(" + words.join("|") + ")", "i");
+
+// EA says a short "e": Bread -> Bred
+const EA_SHORT_E = prefixList([
+  "head", "bread", "dread", "tread", "spread", "thread", "dead", "deaf", "death",
+  "health", "wealth", "stealth", "breath", "sweat", "threat", "ready", "steady",
+  "heavy", "heaven", "weather", "feather", "leather", "heather", "measure",
+  "pleasure", "treasure", "meant", "meadow", "weapon", "instead", "already",
+  "breakfast", "pleasant", "peasant", "jealous", "zealous",
+]);
+
+// EA says neither "ee" nor "e" (or is two separate sounds): leave alone
+const EA_UNCHANGED = prefixList([
+  "great", "break", "steak", "bear(?!d)", "pear", "wear", "swear", "tear", "heart",
+  "hearth", "earth", "early", "earn", "learn", "heard", "search", "pearl", "yearn",
+  "rehears", "ocean", "creat", "idea", "area", "react", "theat", "reali[sz]e",
+  "cereal", "beaut",
+]);
 
 const RULES = [
   {
@@ -29,13 +32,22 @@ const RULES = [
     examples: ["Quit", "Quick"],
   },
   {
+    id: "ea-short",
+    title: "EA that says E is now E",
+    note: "When EA makes a short “e” sound, it becomes a single E.",
+    pattern: "ea",
+    to: "e",
+    only: EA_SHORT_E,
+    examples: ["Bread", "Head", "Ready"],
+  },
+  {
     id: "ea",
     title: "EA that says EE is now EE",
-    note: "Only when EA makes the long “ee” sound. EA in words like Bread, Great or Bear stays as it is.",
+    note: "Only when EA makes the long “ee” sound. EA in words like Great or Bear stays as it is.",
     pattern: "ea(?!u)",
     to: "ee",
-    skip: EA_NOT_EE,
-    examples: ["Eat", "Dream", "Bread"],
+    skip: EA_UNCHANGED,
+    examples: ["Eat", "Dream", "Great"],
   },
   {
     id: "ch",
@@ -79,7 +91,7 @@ const RULES = [
   },
 ];
 
-const RULES_RE = new RegExp(RULES.map((r) => `(${r.pattern})`).join("|"), "gi");
+const STICKY = RULES.map((r) => new RegExp(r.pattern, "iy"));
 
 function matchCase(source, out) {
   const upper = (ch) => ch !== ch.toLowerCase();
@@ -96,14 +108,31 @@ function wordAt(text, offset) {
   return text.slice(start, end);
 }
 
+// Single left-to-right pass: at each position the first rule that matches
+// (and passes its word-list conditions) wins; otherwise the character is kept.
 function translate(text) {
-  return text.replace(RULES_RE, (...args) => {
-    const match = args[0];
-    const offset = args[1 + RULES.length];
-    const rule = RULES[args.slice(1, 1 + RULES.length).findIndex((g) => g !== undefined)];
-    if (rule.skip && rule.skip.test(wordAt(text, offset))) return match;
-    return matchCase(match, rule.to);
-  });
+  let result = "";
+  let i = 0;
+  while (i < text.length) {
+    let applied = false;
+    for (let n = 0; n < RULES.length; n++) {
+      const rule = RULES[n];
+      STICKY[n].lastIndex = i;
+      const m = STICKY[n].exec(text);
+      if (!m) continue;
+      if (rule.only || rule.skip) {
+        const word = wordAt(text, i);
+        if (rule.only && !rule.only.test(word)) continue;
+        if (rule.skip && rule.skip.test(word)) continue;
+      }
+      result += matchCase(m[0], rule.to);
+      i += m[0].length;
+      applied = true;
+      break;
+    }
+    if (!applied) result += text[i++];
+  }
+  return result;
 }
 
 if (typeof module !== "undefined") module.exports = { RULES, translate };
