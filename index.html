@@ -40,6 +40,8 @@
     border: 1px solid var(--line); border-radius: 6px;
   }
   button:hover { border-color: var(--accent); color: var(--accent); }
+  .count { font-size: .85rem; color: var(--muted); display: flex; justify-content: space-between; }
+  .count strong { color: var(--accent); }
   h2 { margin: 40px 0 12px; font-size: 1.2rem; }
   .rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; counter-reset: rule; }
   .rule {
@@ -65,10 +67,12 @@
     <div class="pane">
       <div class="pane-head"><label for="src">Regular English</label></div>
       <textarea id="src" spellcheck="false" placeholder="Type or paste text here…">Chris checked the cell and the chicken track in the city. Chat about the classic mess!</textarea>
+      <div class="count"><span id="srcCount"></span></div>
     </div>
     <div class="pane">
       <div class="pane-head"><label for="out">Simplified English</label><button id="copy" type="button">Copy</button></div>
       <textarea id="out" readonly spellcheck="false"></textarea>
+      <div class="count"><span id="outCount"></span><span id="reduction"></span></div>
     </div>
   </div>
 
@@ -80,7 +84,14 @@
 <script>
   const src = document.getElementById("src");
   const out = document.getElementById("out");
-  const update = () => { out.value = translate(src.value); };
+  const update = () => {
+    out.value = translate(src.value);
+    const a = src.value.length, b = out.value.length;
+    document.getElementById("srcCount").textContent = `${a.toLocaleString()} characters`;
+    document.getElementById("outCount").textContent = `${b.toLocaleString()} characters`;
+    const pct = a ? ((a - b) / a) * 100 : 0;
+    document.getElementById("reduction").innerHTML = `<strong>${pct.toFixed(1)}%</strong> reduction`;
+  };
   src.addEventListener("input", update);
   update();
 
