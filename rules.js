@@ -14,9 +14,12 @@ const EA_SHORT_E = prefixList([
   "breakfast", "pleasant", "peasant", "jealous", "zealous",
 ]);
 
+// EA says a long "a": Bear -> Bare, Great -> Grate (the new silent E follows the consonant)
+const EA_LONG_A = prefixList(["great", "break", "steak", "bear(?!d)", "pear(?!l)", "wear(?!y)", "swear"]);
+
 // EA says neither "ee" nor "e" (or is two separate sounds): leave alone
 const EA_UNCHANGED = prefixList([
-  "great", "break", "steak", "bear(?!d)", "pear", "wear", "swear", "tear", "heart",
+  "tear", "heart",
   "hearth", "earth", "early", "earn", "learn", "heard", "search", "pearl", "yearn",
   "rehears", "ocean", "creat", "idea", "area", "react", "theat", "reali[sz]e",
   "cereal", "beaut",
@@ -39,6 +42,15 @@ const RULES = [
     to: "e",
     only: EA_SHORT_E,
     examples: ["Bread", "Head", "Ready"],
+  },
+  {
+    id: "ea-long-a",
+    title: "EA that says A is now A",
+    note: "When EA makes the long “a” sound, it becomes A, with a silent E after the next consonant.",
+    pattern: "ea[bcdfghjklmnpqrstvwxz]",
+    to: (m, next) => "a" + m[2] + (next && /[aeiouy]/i.test(next) ? "" : "e"),
+    only: EA_LONG_A,
+    examples: ["Bear", "Great", "Break"],
   },
   {
     id: "ea",
@@ -125,7 +137,8 @@ function translate(text) {
         if (rule.only && !rule.only.test(word)) continue;
         if (rule.skip && rule.skip.test(word)) continue;
       }
-      result += matchCase(m[0], rule.to);
+      const to = typeof rule.to === "function" ? rule.to(m[0], text[i + m[0].length]) : rule.to;
+      result += matchCase(m[0], to);
       i += m[0].length;
       applied = true;
       break;
