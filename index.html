@@ -66,7 +66,7 @@
   <div class="editors">
     <div class="pane">
       <div class="pane-head"><label for="src">Regular English</label></div>
-      <textarea id="src" spellcheck="false" placeholder="Type or paste text here…">Quick chickens chase the cat and cow past the city cell, making a mess of the tracks.</textarea>
+      <textarea id="src" spellcheck="false" placeholder="Type or paste text here…">Quick chickens chase the cat and cow past the city cell, making a mess of the tracks while we eat a neat meal.</textarea>
       <div class="count"><span id="srcCount"></span></div>
     </div>
     <div class="pane">
@@ -103,7 +103,7 @@
   });
 
   const rulesEl = document.getElementById("rules");
-  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu"].map((id) => RULES.find((r) => r.id === id));
+  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu", "ea"].map((id) => RULES.find((r) => r.id === id));
   for (const r of SHOWN) {
     const card = document.createElement("section");
     card.className = "rule";
