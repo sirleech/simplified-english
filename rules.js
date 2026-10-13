@@ -25,6 +25,11 @@ const EA_UNCHANGED = prefixList([
   "cereal", "beaut",
 ]);
 
+// Words where a silent H / S / B is dropped (matched as word prefixes)
+const SILENT_H_WORDS = prefixList(["hour", "honest", "honor", "honour", "heir"]);
+const SILENT_S_WORDS = prefixList(["island", "aisle", "isle"]);
+const SILENT_B_WORDS = prefixList(["debt", "doubt", "subtle"]);
+
 const RULES = [
   {
     id: "qu",
@@ -60,6 +65,113 @@ const RULES = [
     to: "ee",
     skip: EA_UNCHANGED,
     examples: ["Eat", "Dream", "Great"],
+  },
+  {
+    id: "silent-k",
+    title: "Silent K is removed",
+    note: "A K before N at the start of a word makes no sound, so it goes.",
+    pattern: "(?<![a-z])kn",
+    to: "n",
+    examples: ["Know", "Knife"],
+  },
+  {
+    id: "silent-w",
+    title: "Silent W is removed",
+    note: "A W before R at the start of a word makes no sound, so it goes.",
+    pattern: "(?<![a-z])wr",
+    to: "r",
+    examples: ["Write", "Wrong"],
+  },
+  {
+    id: "silent-g",
+    title: "Silent G is removed",
+    note: "A G before N, at the start or end of a word, makes no sound.",
+    pattern: "(?<![a-z])gn|gn(?![a-z])",
+    to: "n",
+    examples: ["Gnat", "Sign"],
+  },
+  {
+    id: "silent-p",
+    title: "Silent P is removed",
+    note: "A P before S or N at the start of a word makes no sound.",
+    pattern: "(?<![a-z])p[sn]",
+    to: (m) => m[1],
+    examples: ["Psalm", "Pneumonia"],
+  },
+  {
+    id: "silent-b",
+    title: "Silent B (and N) after M is removed",
+    note: "B or N after M at the end of a word makes no sound.",
+    pattern: "m[bn](?=s?(?![a-z]))",
+    to: (m) => m[0],
+    examples: ["Lamb", "Climb", "Autumn"],
+  },
+  {
+    id: "silent-bt",
+    title: "Silent B before T is removed",
+    note: "B before T in a few words is never said.",
+    pattern: "bt",
+    to: "t",
+    only: SILENT_B_WORDS,
+    examples: ["Debt", "Doubt"],
+  },
+  {
+    id: "silent-gh",
+    title: "Silent GH is removed",
+    note: "GH before T, and IGH at the end of a word, makes no sound.",
+    pattern: "(?<=[a-z])gh(?=t)|igh(?![a-z])",
+    to: (m) => (m.length === 2 ? "" : "i"),
+    examples: ["Night", "Eight", "High"],
+  },
+  {
+    id: "silent-l",
+    title: "Silent L is removed",
+    note: "L in ALK, OLK and OULD makes no sound.",
+    pattern: "(?<=[ao])l(?=k)|(?<=ou)l(?=d)",
+    to: "",
+    examples: ["Walk", "Folk", "Would"],
+  },
+  {
+    id: "silent-h-start",
+    title: "Silent H is removed (WH, RH, GH)",
+    note: "H after W, R or G at the start of a word makes no sound. WHO and WHOLE are left alone.",
+    pattern: "(?<![a-z])(?:wh(?!o)|rh|gh)",
+    to: (m) => m[0],
+    examples: ["What", "Rhyme", "Ghost"],
+  },
+  {
+    id: "silent-h-word",
+    title: "Silent H is removed (Hour, Honest)",
+    note: "H at the start of a few words is never said.",
+    pattern: "h[oe]",
+    to: (m) => m[1],
+    only: SILENT_H_WORDS,
+    examples: ["Hour", "Honest", "Heir"],
+  },
+  {
+    id: "silent-t",
+    title: "Silent T is removed",
+    note: "T in STLE, STEN and FTEN at the end of a word makes no sound.",
+    pattern: "(?<=s)t(?=(?:le|en)(?![a-z]))|(?<=f)t(?=en(?![a-z]))",
+    to: "",
+    examples: ["Castle", "Listen", "Often"],
+  },
+  {
+    id: "silent-s",
+    title: "Silent S is removed",
+    note: "S in Island and Aisle makes no sound.",
+    pattern: "s(?=l)",
+    to: "",
+    only: SILENT_S_WORDS,
+    examples: ["Island", "Aisle"],
+  },
+  {
+    id: "silent-c",
+    title: "Silent C is removed",
+    note: "C after S and before E, I or Y makes no sound.",
+    pattern: "sc(?=[eiy])",
+    to: "s",
+    examples: ["Science", "Scene"],
   },
   {
     id: "ch",
@@ -106,6 +218,7 @@ const RULES = [
 const STICKY = RULES.map((r) => new RegExp(r.pattern, "iy"));
 
 function matchCase(source, out) {
+  if (!out) return "";
   const upper = (ch) => ch !== ch.toLowerCase();
   if (source.length > 1 && [...source].every(upper)) return out.toUpperCase();
   return upper(source[0]) ? out[0].toUpperCase() + out.slice(1) : out;
