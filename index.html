@@ -65,13 +65,13 @@
 
   <div class="editors">
     <div class="pane">
-      <div class="pane-head"><label for="src">Regular English</label></div>
-      <textarea id="src" spellcheck="false" placeholder="Type or paste text here…">Quick chickens chase the cat and cow past the city cell, making a mess of the tracks while we eat a neat meal of bread near a great bear. The knight would walk to the castle to write about a gnat, the sign, the psalm, a lamb, the debt, the honest hour, the high light of night, the ghost on the island, and the science of rhyme. I tried to lie about the pie. I like to find a kind child by the fire.</textarea>
+      <div class="pane-head"><label for="src">Regular English</label><button id="reset" type="button">Reset</button></div>
+      <textarea id="src" autocomplete="off" spellcheck="false" placeholder="Type or paste text here…">Quick chickens chase the cat and cow past the city cell, making a mess of the tracks while we eat a neat meal of bread near a great bear. The knight would walk to the castle to write about a gnat, the sign, the psalm, a lamb, the debt, the honest hour, the high light of night, the ghost on the island, and the science of rhyme. I tried to lie about the pie. I like to find a kind child by the fire.</textarea>
       <div class="count"><span id="srcCount"></span></div>
     </div>
     <div class="pane">
       <div class="pane-head"><label for="out">Simplified English</label><button id="copy" type="button">Copy</button></div>
-      <textarea id="out" readonly spellcheck="false"></textarea>
+      <textarea id="out" readonly autocomplete="off" spellcheck="false"></textarea>
       <div class="count"><span id="outCount"></span><span id="reduction"></span></div>
     </div>
   </div>
@@ -93,7 +93,15 @@
     document.getElementById("reduction").innerHTML = `<strong>${pct.toFixed(1)}%</strong> reduction`;
   };
   src.addEventListener("input", update);
+  // Always start from the default text (browsers can otherwise restore edited text on refresh).
+  src.value = src.defaultValue;
   update();
+
+  document.getElementById("reset").addEventListener("click", () => {
+    src.value = src.defaultValue;
+    update();
+    src.focus();
+  });
 
   document.getElementById("copy").addEventListener("click", async (e) => {
     try { await navigator.clipboard.writeText(out.value); }
