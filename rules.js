@@ -36,6 +36,25 @@ const IE_SAYS_Y = new RegExp(
   "i"
 );
 
+// "I say Y" words. The I-C-E pattern (fire, time, like) is matched on the whole
+// word: optional common prefix + consonants + I + one consonant + E + optional ending.
+// Short-I look-alikes (give, live, river, engine...) are excluded.
+const LONG_I_E = new RegExp(
+  "^(?:a|be|con|com|de|di|dis|en|ex|in|re|pro|sur|ar|ap|ad|un|out|up|on|al|im)?" +
+    "(?:qu|[bcdfghjklmnpqrstvwxz])*i[bcdfghjklmnpqrstvwxz]e(?:s|d|r|st|ly)?$",
+  "i"
+);
+const LONG_IVE = "(?:five|hive|dive|drive|alive|arrive|strive|survive|thrive|revive|deprive)(?:s|d|r)?";
+const NOT_LONG_I = new RegExp(
+  "^(?:(?!" + LONG_IVE + "$)[a-z]*ive(?:s|d|r|ly)?|river|liver|shiver|quiver|deliver|giver|engine|promise|regime)",
+  "i"
+);
+// I says Y before ND / LD: Find -> Fynd
+const I_ND_LD = new RegExp(
+  "^(?:behind|find|kind|mankind|unkind|mind|remind|bind|blind|grind|rind|wild|mild|child)(?:s|ed|er|ers|ing|ness|ly|ful)?$",
+  "i"
+);
+
 // Words where a silent H / S / B is dropped (matched as word prefixes)
 const SILENT_H_WORDS = prefixList(["hour", "honest", "honor", "honour", "heir"]);
 const SILENT_S_WORDS = prefixList(["island", "aisle", "isle"]);
@@ -142,6 +161,33 @@ const RULES = [
     to: "y",
     only: IE_SAYS_Y,
     examples: ["Lie", "Pie", "Tried", "Field"],
+  },
+  {
+    id: "long-i",
+    title: "I that says Y is now Y",
+    note: "When I makes the long “eye” sound with a silent E after it, the I becomes Y and the silent E goes.",
+    pattern: "i(?=[bcdfghjklmnpqrstvwxz]e(?:s|d|r|st|ly)?(?![a-z]))",
+    to: "y",
+    only: LONG_I_E,
+    skip: NOT_LONG_I,
+    examples: ["Fire", "Time", "Like"],
+  },
+  {
+    id: "long-i-e",
+    hidden: true,
+    pattern: "(?<=i[bcdfghjklmnpqrstvwxz])e(?=(?:s|d|r|st|ly)?(?![a-z]))",
+    to: "",
+    only: LONG_I_E,
+    skip: NOT_LONG_I,
+  },
+  {
+    id: "long-i-nd",
+    title: "I before ND or LD is now Y",
+    note: "In Find, Kind, Child and Wild the I says its own name, so it becomes Y.",
+    pattern: "i(?=nd|ld)",
+    to: "y",
+    only: I_ND_LD,
+    examples: ["Find", "Kind", "Child"],
   },
   {
     id: "silent-gh",
