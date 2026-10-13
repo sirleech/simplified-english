@@ -25,6 +25,17 @@ const EA_UNCHANGED = prefixList([
   "cereal", "beaut",
 ]);
 
+// IE says a long "i" (the Y sound): Lie -> Ly. Whole words only, so field/chief/friend are untouched.
+const IE_SAYS_Y = new RegExp(
+  "^(?:" +
+    [
+      "(?:l|d|p|t|v)ie[sd]?", "(?:cr|tr|fr|dr|sp|fl)ie[sd]", "[a-z]*pl(?:ie[sd])",
+      "[a-z]*fi(?:ed|es)", "reli?e[sd]", "denie[sd]", "magpie", "necktie", "belie[sd]?",
+    ].join("|") +
+    ")$",
+  "i"
+);
+
 // Words where a silent H / S / B is dropped (matched as word prefixes)
 const SILENT_H_WORDS = prefixList(["hour", "honest", "honor", "honour", "heir"]);
 const SILENT_S_WORDS = prefixList(["island", "aisle", "isle"]);
@@ -122,6 +133,15 @@ const RULES = [
     pattern: "ight",
     to: (m, next) => "it" + (next && /[aeiouy]/i.test(next) ? "" : "e"),
     examples: ["Night", "Light", "Bright"],
+  },
+  {
+    id: "ie",
+    title: "IE that says Y is now Y",
+    note: "When IE makes the long “i” sound, it is written Y. IE in Field or Chief stays as it is.",
+    pattern: "ie",
+    to: "y",
+    only: IE_SAYS_Y,
+    examples: ["Lie", "Pie", "Tried", "Field"],
   },
   {
     id: "silent-gh",

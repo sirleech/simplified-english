@@ -66,7 +66,7 @@
   <div class="editors">
     <div class="pane">
       <div class="pane-head"><label for="src">Regular English</label></div>
-      <textarea id="src" spellcheck="false" placeholder="Type or paste text here…">Quick chickens chase the cat and cow past the city cell, making a mess of the tracks while we eat a neat meal of bread near a great bear. The knight would walk to the castle to write about a gnat, the sign, the psalm, a lamb, the debt, the honest hour, the high light of night, the ghost on the island, and the science of rhyme.</textarea>
+      <textarea id="src" spellcheck="false" placeholder="Type or paste text here…">Quick chickens chase the cat and cow past the city cell, making a mess of the tracks while we eat a neat meal of bread near a great bear. The knight would walk to the castle to write about a gnat, the sign, the psalm, a lamb, the debt, the honest hour, the high light of night, the ghost on the island, and the science of rhyme. I tried to lie about the pie.</textarea>
       <div class="count"><span id="srcCount"></span></div>
     </div>
     <div class="pane">
@@ -103,7 +103,7 @@
   });
 
   const rulesEl = document.getElementById("rules");
-  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu", "ea", "ea-short", "ea-long-a", "silent-k", "silent-w", "silent-g", "silent-p", "silent-b", "silent-bt", "ight", "silent-gh", "silent-l", "silent-h-start", "silent-h-word", "silent-t", "silent-s", "silent-c"].map((id) => RULES.find((r) => r.id === id));
+  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu", "ea", "ea-short", "ea-long-a", "silent-k", "silent-w", "silent-g", "silent-p", "silent-b", "silent-bt", "ight", "ie", "silent-gh", "silent-l", "silent-h-start", "silent-h-word", "silent-t", "silent-s", "silent-c"].map((id) => RULES.find((r) => r.id === id));
   for (const r of SHOWN) {
     const card = document.createElement("section");
     card.className = "rule";
