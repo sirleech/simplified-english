@@ -76,7 +76,7 @@
     </div>
   </div>
 
-  <h2>Rules</h2>
+  <h2>Rules <span id="ruleCount" style="color: var(--muted); font-weight: 400"></span></h2>
   <div class="rules" id="rules"></div>
 </main>
 
@@ -103,7 +103,15 @@
   });
 
   const rulesEl = document.getElementById("rules");
-  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu", "ea", "ea-short", "ea-long-a", "silent-k", "silent-w", "silent-g", "silent-p", "silent-b", "silent-bt", "ight", "ie", "long-i", "long-i-nd", "silent-gh", "silent-l", "silent-h-start", "silent-h-word", "silent-t", "silent-s", "silent-c"].map((id) => RULES.find((r) => r.id === id));
+  // Preferred card order; any rule not listed here is appended automatically,
+  // so new rules always appear without editing this list.
+  const ORDER = ["hard-c", "soft-c", "ch", "ss", "ck", "qu", "ea", "ea-short", "ea-long-a", "silent-k", "silent-w", "silent-g", "silent-p", "silent-b", "silent-bt", "ight", "ie", "long-i", "long-i-nd", "silent-gh", "silent-l", "silent-h-start", "silent-h-word", "silent-t", "silent-s", "silent-c"];
+  const byId = (id) => RULES.find((r) => r.id === id);
+  const SHOWN = [
+    ...ORDER.map(byId).filter(Boolean),
+    ...RULES.filter((r) => !r.hidden && !ORDER.includes(r.id)),
+  ];
+  document.getElementById("ruleCount").textContent = `(${SHOWN.length})`;
   for (const r of SHOWN) {
     const card = document.createElement("section");
     card.className = "rule";
