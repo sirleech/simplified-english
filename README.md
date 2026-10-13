@@ -4,6 +4,19 @@ Paste regular US/UK English into the left box and get Simplified English on the 
 
 **Live app: https://sirleech.github.io/simplified-english/**
 
+## Manifesto
+
+English spelling is a pile of exceptions with a few rules on top. Learners memorize the exceptions one at a time, and even native speakers misspell words for life. It doesn't have to be this way.
+
+1. **One sound, one spelling.** If two letters make the same sound, one of them is redundant. C is a K or an S. Q already says KW. CK is just K. SS is just S. Say it once.
+2. **A letter that makes no sound shouldn't be written.** Knife, write, lamb, night: every silent letter is one more thing to memorize and gets nothing back.
+3. **Rules over exceptions.** A rule that needs a long list of exceptions isn't a rule. Wherever we can, we pick the rule that covers the most words and let the rest follow.
+4. **Spell it the way it sounds.** The test for any change is whether a new reader says the word correctly the first time.
+5. **Small steps.** We change one pattern at a time, show a before and after for each, and keep the whole list readable on one page. A spelling system you can't explain in a page is too complicated.
+6. **Every exception is a bug.** Today some rules lean on word lists (which words have EA saying "e", which I says Y) because the old spelling can't be told apart by looking at it. Those lists are scaffolding. The goal is for them to shrink as the new spellings replace the old ones, until the translator needs none.
+
+This isn't about making English look strange. It's about making it learnable.
+
 ## Run locally
 
 It's a static page with no build step. Open `index.html`, or run the no-cache dev server:
