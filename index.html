@@ -103,7 +103,7 @@
   });
 
   const rulesEl = document.getElementById("rules");
-  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu", "ea", "ea-short", "ea-long-a", "silent-k", "silent-w", "silent-g", "silent-p", "silent-b", "silent-bt", "silent-gh", "silent-l", "silent-h-start", "silent-h-word", "silent-t", "silent-s", "silent-c"].map((id) => RULES.find((r) => r.id === id));
+  const SHOWN = ["hard-c", "soft-c", "ch", "ss", "ck", "qu", "ea", "ea-short", "ea-long-a", "silent-k", "silent-w", "silent-g", "silent-p", "silent-b", "silent-bt", "ight", "silent-gh", "silent-l", "silent-h-start", "silent-h-word", "silent-t", "silent-s", "silent-c"].map((id) => RULES.find((r) => r.id === id));
   for (const r of SHOWN) {
     const card = document.createElement("section");
     card.className = "rule";

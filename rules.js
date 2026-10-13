@@ -116,12 +116,20 @@ const RULES = [
     examples: ["Debt", "Doubt"],
   },
   {
+    id: "ight",
+    title: "IGHT is spelled ITE",
+    note: "GH is silent and the I says its own name, so it gets a silent E, like Night → Nite.",
+    pattern: "ight",
+    to: (m, next) => "it" + (next && /[aeiouy]/i.test(next) ? "" : "e"),
+    examples: ["Night", "Light", "Bright"],
+  },
+  {
     id: "silent-gh",
     title: "Silent GH is removed",
-    note: "GH before T, and IGH at the end of a word, makes no sound.",
+    note: "GH before T (as in Eight or Thought), and IGH at the end of a word, makes no sound.",
     pattern: "(?<=[a-z])gh(?=t)|igh(?![a-z])",
     to: (m) => (m.length === 2 ? "" : "i"),
-    examples: ["Night", "Eight", "High"],
+    examples: ["Eight", "Thought", "High"],
   },
   {
     id: "silent-l",
